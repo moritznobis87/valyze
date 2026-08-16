@@ -1,19 +1,31 @@
 # Changelog
 
-## v5.7 – Einspeisekurven aus Messreihen, Prämienmodell je Markt (2026-08)
+## v5.7 – Einspeisekurven je Bauform, Prämienmodell je Markt (2026-08)
 
 - **Zwei hinterlegte Einspeisekurven**: „Pult" und „Tracker", abgeleitet
-  aus je einer Stundenreihe desselben Standorts und Wetterjahres (8.760
-  Werte, monatsweise summiert und auf 100 % normiert). Sie ersetzen die
-  bisherige geschätzte Standardkurve. In den globalen Annahmen wird
-  zwischen beiden umgeschaltet; wer die Werte von Hand ändert, landet
-  bei „Eigene Kurve".
-  Die Nachführung verschiebt Erzeugung aus April und September in die
-  Monate Mai bis Juli – für die Monatsrechnung spürbar, weil die Monate
-  unterschiedliche Marktwerte tragen.
-  Die Ableitung steht in `engine/io_lastgang.py`, die Rohreihen unter
-  `data/lastgang/`; die Tests rechnen die hinterlegten Kurven daraus
-  nach.
+  aus PVGIS-Monatserträgen einer 1-kWp-Anlage (1.148 bzw.
+  1.429 kWh/kWp, also 24,5 % Nachführgewinn) und auf 100 % normiert. Sie
+  ersetzen die bisherige geschätzte Standardkurve. In den globalen
+  Annahmen wird zwischen beiden umgeschaltet; wer die Werte von Hand
+  ändert, landet bei „Eigene Kurve".
+  Der Nachführgewinn ist im Juli größer als im Dezember (28,6 % gegen
+  22,0 %), die Tracker-Kurve deshalb sommerlastiger – für die
+  Monatsrechnung wesentlich, weil die Sommermonate die niedrigeren
+  Marktwerte tragen.
+  Die Rohwerte stehen als `PVGIS_MONATSERTRAG_KWH_KWP` im Modell und
+  bleiben damit gegen eine wiederholte PVGIS-Abfrage prüfbar.
+- **Großhandelspreis sichtbar**: Er wurde seit v5.6 aus der
+  Aurora-Arbeitsmappe importiert und trägt die Direktvermarktungskosten
+  im Modus „Anteil am Großhandelspreis" – in den globalen Annahmen war er
+  aber nirgends zu sehen. Jetzt steht er als eigenes Szenariendiagramm
+  neben dem Marktwert Solar (der Abstand der beiden Kurven ist die
+  Kannibalisierung) und als Spalte in der Zahlentabelle, dort auch
+  editierbar. Fehlt er einem Szenario, sagt das ein Hinweis statt eines
+  leeren Diagramms.
+- **Fehler behoben**: Beim Speichern der globalen Annahmen gingen die
+  Großhandelspreis-Kurven eines Szenarios verloren, sobald dessen Zahlen
+  aufgeklappt waren – das Szenario wurde aus der Tabelle neu gebaut, die
+  Baseload-Reihen kannte die Tabelle aber nicht.
 - **Prämienmodell folgt dem Länderschalter**: Österreich rechnet mit dem
   zweiseitigen CfD mit Toleranzband (§ 10 EAG), Deutschland mit dem
   einseitigen CfD des EEG. Beides bleibt danach frei wählbar. Die
